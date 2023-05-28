@@ -3,9 +3,10 @@
 #include <string>
 #include <rapidjson/document.h>
 
+// Deserializable Type Concept
 template <typename T> 
-concept DeserializableObject = requires (T t, rapidjson::Value& json) {
-	t.Deserialize(json);
+concept Deserializable = requires (T t, rapidjson::Value& json) {
+	{ t.Deserialize(json) } -> std::convertible_to<bool>;
 };
 
 namespace rapidjsonutils {
@@ -25,7 +26,7 @@ namespace rapidjsonutils {
 		return false;
 	}
 
-	template <typename TObject> requires DeserializableObject<TObject>
+	template <typename TObject> requires Deserializable<TObject>
 	bool GetPropObject(rapidjson::Value& json, const char* propName, TObject& obj) {
 		if (!json.HasMember(propName)) return false;
 		return obj.Deserialize(json[propName]);

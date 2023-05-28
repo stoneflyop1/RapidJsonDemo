@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string>
 #include "RapidJsonUtils.h"
 
 struct Point {
@@ -49,7 +48,7 @@ protected:
 		return true;
 	}
 	template <typename JsonWriter>
-	void Serialize(JsonWriter& writer) const {
+	void SerializeTypeName(JsonWriter& writer) const {
 		writer.String(ShapeTypeNameKey);
 		writer.String(GetTypeName());
 	}
@@ -83,7 +82,7 @@ public:
 	template <typename JsonWriter>
 	void Serialize(JsonWriter& writer) const {
 		writer.StartObject();
-		Shape::Serialize(writer);
+		Shape::SerializeTypeName(writer);
 		writer.String("center");
 		m_center.Serialize(writer);
 		writer.String("radius");
@@ -123,7 +122,7 @@ public:
 	template <typename JsonWriter>
 	void Serialize(JsonWriter& writer) const {
 		writer.StartObject();
-		Shape::Serialize(writer);
+		Shape::SerializeTypeName(writer);
 		writer.String("center");
 		m_center.Serialize(writer);
 		writer.String("side");
