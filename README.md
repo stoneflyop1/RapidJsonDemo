@@ -1,5 +1,11 @@
 # RapidJsonDemo
-Demos how to use RapidJson 
+
+Demos how to use RapidJson.
+
+- base/child class (de)serialization
+- template writer serialize
+- serialize with rapidjson::Document
+
 
 ## clone repo
 

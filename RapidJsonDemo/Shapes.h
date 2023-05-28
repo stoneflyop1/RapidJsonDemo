@@ -11,6 +11,12 @@ struct Point {
 		rapidjsonutils::GetPropDouble(json, "Y", Y);
 		return true;
 	}
+	rapidjson::Value ToJson(rapidjson::Document& doc) const {
+		rapidjson::Value val(rapidjson::kObjectType);
+		val.AddMember("X", X, doc.GetAllocator());
+		val.AddMember("Y", Y, doc.GetAllocator());
+		return val;
+	}
 	template <typename JsonWriter>
 	void Serialize(JsonWriter& writer) const {
 		writer.StartObject();
@@ -52,6 +58,13 @@ protected:
 		writer.String(ShapeTypeNameKey);
 		writer.String(GetTypeName());
 	}
+	void AddTypeNameToJsonValue(rapidjson::Value& val, rapidjson::Document& doc) const {
+		rapidjson::Value tVal;
+		tVal.SetString(rapidjson::StringRef(GetTypeName()));
+		val.AddMember(rapidjson::StringRef(ShapeTypeNameKey), tVal, doc.GetAllocator());
+	}
+public:
+	virtual rapidjson::Value ToJson(rapidjson::Document& doc) const = 0;
 };
 
 static const char* ShapeTypeNameCircle = "Circle";
@@ -88,6 +101,13 @@ public:
 		writer.String("radius");
 		writer.Double(m_radius);
 		writer.EndObject();
+	}
+	rapidjson::Value ToJson(rapidjson::Document& doc) const override {
+		rapidjson::Value val(rapidjson::kObjectType);
+		AddTypeNameToJsonValue(val, doc);
+		val.AddMember("center", m_center.ToJson(doc), doc.GetAllocator());
+		val.AddMember("radius", m_radius, doc.GetAllocator());
+		return val;
 	}
 private:
 	Point m_center;
@@ -128,6 +148,13 @@ public:
 		writer.String("side");
 		writer.Double(m_side);
 		writer.EndObject();
+	}
+	rapidjson::Value ToJson(rapidjson::Document& doc) const override {
+		rapidjson::Value val(rapidjson::kObjectType);
+		AddTypeNameToJsonValue(val, doc);
+		val.AddMember("center", m_center.ToJson(doc), doc.GetAllocator());
+		val.AddMember("side", m_side, doc.GetAllocator());
+		return val;
 	}
 private:
 	Point m_center;
